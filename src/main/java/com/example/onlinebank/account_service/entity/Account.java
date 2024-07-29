@@ -1,12 +1,11 @@
 package com.example.onlinebank.account_service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.onlinebank.client_service.entity.Client;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Entity
 @Data
@@ -22,4 +21,8 @@ public class Account {
     private BigDecimal balance;
 
     private AccountType accountType;
+
+    private Currency currency;
+    @ManyToOne
+    private Client client;
 }
