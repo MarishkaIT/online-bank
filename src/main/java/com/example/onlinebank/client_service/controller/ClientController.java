@@ -4,6 +4,7 @@ import com.example.onlinebank.client_service.entity.Client;
 import com.example.onlinebank.client_service.exception.ClientExistsException;
 import com.example.onlinebank.client_service.exception.InvalidClientDataException;
 import com.example.onlinebank.client_service.service.ClientService;
+import com.example.onlinebank.notification_service.service.EmailService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ public class ClientController {
 
     private ClientService clientService;
 
+    private EmailService emailService;
 
     @GetMapping
     public List<Client> getAllClients() {
@@ -35,6 +37,7 @@ public class ClientController {
     public ResponseEntity<Client> createClient(@RequestBody Client client) {
         try {
             Client newClient = clientService.createClient(client);
+            emailService.sendEmail(newClient.getId(), "Welcome!", "You have successfully registered in our system!");
             return ResponseEntity.status(HttpStatus.CREATED).body(newClient);
         }catch (InvalidClientDataException e) {
             return ResponseEntity.badRequest().build();

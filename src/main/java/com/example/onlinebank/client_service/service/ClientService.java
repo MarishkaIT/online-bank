@@ -8,23 +8,22 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ClientService {
 
     private ClientRepository clientRepository;
-    private RestTemplate restTemplate;
     private MessageSource messageSource;
+
+
 
     public List<Client> getAllClients() {
         return clientRepository.findAll();
     }
 
-    public Optional<Client> getClientById(Long clientId) {
+    public Client getClientById(Long clientId) {
         return clientRepository.findById(clientId);
     }
 

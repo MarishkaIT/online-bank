@@ -1,10 +1,11 @@
 package com.example.onlinebank.client_service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.onlinebank.account_service.entity.Account;
+import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -21,4 +22,10 @@ public class Client {
     private String email;
 
     private String phoneNumber;
+
+    @ManyToOne
+    private Account account;
+    @Getter
+    private Long accountId;
+
 }
