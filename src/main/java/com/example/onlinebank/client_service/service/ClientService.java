@@ -27,6 +27,7 @@ public class ClientService {
         return clientRepository.findById(clientId);
     }
 
+
     @Transactional
     public Client createClient(Client client) throws InvalidClientDataException, ClientExistsException {
 
