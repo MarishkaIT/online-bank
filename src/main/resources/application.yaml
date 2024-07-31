@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: online-bank
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: pass
+    url: jdbc:postgresql://localhost:5432/db_bank
+
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.yaml
+

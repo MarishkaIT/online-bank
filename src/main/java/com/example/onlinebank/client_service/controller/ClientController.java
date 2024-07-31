@@ -14,7 +14,7 @@ import java.util.List;
 import static org.springframework.http.ResponseEntity.notFound;
 
 @RestController
-@RequestMapping("/api/client")
+@RequestMapping("/api/clients")
 public class ClientController {
 
     private ClientService clientService;

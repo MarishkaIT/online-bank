@@ -5,7 +5,7 @@ import com.example.onlinebank.account_service.service.AccountService;
 import com.example.onlinebank.client_service.entity.Client;
 import com.example.onlinebank.client_service.service.ClientService;
 import com.example.onlinebank.notification_service.entity.Notification;
-import com.example.onlinebank.notification_service.entity.NotificationType;
+
 import com.example.onlinebank.notification_service.repository.NotificationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -27,8 +27,8 @@ public class NotificationService {
         return notificationRepository.findByClientId(clientId);
     }
 
-    public Notification getNotificationById(Long id)  {
-        return notificationRepository.findById(id).orElseThrow();
+    public Optional<Notification> getNotificationById(Long id)  {
+        return notificationRepository.findById(id);
     }
 
     public void saveNotification(Notification notification) {
@@ -40,23 +40,23 @@ public class NotificationService {
     }
 
     public void sendNotification(Notification notification) {
-        Client client = clientService.getClientById(notification.getClientId());
-        Account account = accountService.getAccountById(client.getAccountId());
+        Optional<Client> client = clientService.getClientById(notification.getClientId());
+        Account account = accountService.getAccountById(client.get().getAccountId());
 
         switch (notification.getNotificationType()) {
             case TRANSACTION_SUCCESS:
-                sendTransactionSuccessNotification(client, account, notification.getMessage());
+                sendTransactionSuccessNotification(client.get(), account, notification.getMessage());
                 break;
             case TRANSACTION_FAILED:
-                sendTransactionFailedNotification(client, account, notification.getMessage());
+                sendTransactionFailedNotification(client.get(), account, notification.getMessage());
                 break;
 
             case ACCOUNT_UPDATE:
-                sendAccountUpdateNotification(client, account, notification.getMessage());
+                sendAccountUpdateNotification(client.get(), account, notification.getMessage());
                 break;
 
             case PASSWORD_RESET:
-                sendPasswordResetNotification(client, notification.getMessage());
+                sendPasswordResetNotification(client.get(), notification.getMessage());
                 break;
 
             default:
