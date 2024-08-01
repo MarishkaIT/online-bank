@@ -1,6 +1,7 @@
 package com.example.onlinebank.transaction_service.entity;
 
 import com.example.onlinebank.account_service.entity.Account;
+import com.example.onlinebank.payment_service.entity.Payment;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -23,4 +24,7 @@ public class Transaction {
     private BigDecimal amount;
 
     private String description;
+
+    @OneToOne(mappedBy = "transaction")
+    private Payment payment;
 }

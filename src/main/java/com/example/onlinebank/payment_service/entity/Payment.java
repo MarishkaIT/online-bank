@@ -1,9 +1,7 @@
 package com.example.onlinebank.payment_service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.example.onlinebank.transaction_service.entity.Transaction;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -16,13 +14,16 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @ManyToOne
+    private Transaction transaction;
+
     private String cardNumber;
 
     private String expirationDate;
 
     private String cvv;
 
-    private Double amount;
+    private BigDecimal amount;
 
     private String currency;
 
