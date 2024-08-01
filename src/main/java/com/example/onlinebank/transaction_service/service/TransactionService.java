@@ -3,6 +3,8 @@ package com.example.onlinebank.transaction_service.service;
 import com.example.onlinebank.account_service.entity.Account;
 import com.example.onlinebank.account_service.exception.AccountNotFoundException;
 import com.example.onlinebank.account_service.repository.AccountRepository;
+import com.example.onlinebank.payment_service.entity.Payment;
+import com.example.onlinebank.payment_service.service.PaymentService;
 import com.example.onlinebank.transaction_service.entity.Transaction;
 import com.example.onlinebank.transaction_service.exception.TransactionNotFoundException;
 import com.example.onlinebank.transaction_service.repository.TransactionRepository;
@@ -18,6 +20,8 @@ public class TransactionService {
     TransactionRepository transactionRepository;
 
     AccountRepository accountRepository;
+
+    PaymentService paymentService;
 
     public List<Transaction> getAllTransaction() {
         return transactionRepository.findAll();
@@ -47,12 +51,34 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
+    public Transaction createTransactionWithPayment(Long accountId, BigDecimal amount, String description) {
+        Transaction transaction = createTransaction(accountId, amount, description);
+        Payment payment = new Payment();
+        payment.setTransaction(transaction);
+        payment.setAmount(amount);
+        payment.setPaymentStatus("NEW");
+        paymentService.createPayment(payment);
+        return transaction;
+    }
+
     public Transaction updateTransaction(Long transactionId, BigDecimal amount, String description) {
         Transaction transaction = getTransaction(transactionId);
         transaction.setAmount(amount);
         transaction.setDescription(description);
 
         return transactionRepository.save(transaction);
+    }
+
+    public void updateTransactionAndPaymentStatus(Long transactionId, String paymentStatus) {
+        Transaction transaction = getTransaction(transactionId);
+        Payment payment = paymentService.getPayment(transaction.getPayment().getId());
+        paymentService.updatePaymentStatus(payment.getId(), paymentStatus);
+    }
+
+    public void deleteTransactionAndPayment(Long transactionId) {
+        Transaction transaction = getTransaction(transactionId);
+        paymentService.deletePayment(transaction.getPayment().getId());
+        deleteTransaction(transactionId);
     }
 
     public void deleteTransaction(Long transactionId) {
