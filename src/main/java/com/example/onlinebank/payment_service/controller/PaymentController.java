@@ -1,6 +1,7 @@
 package com.example.onlinebank.payment_service.controller;
 
 import com.example.onlinebank.payment_service.entity.Payment;
+import com.example.onlinebank.payment_service.entity.PaymentStatus;
 import com.example.onlinebank.payment_service.service.PaymentService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class PaymentController {
     }
 
     @PutMapping("/{id}/status")
-    public Payment updatePaymentStatus(@PathVariable Long id, @RequestBody String status) {
+    public Payment updatePaymentStatus(@PathVariable Long id, @RequestBody PaymentStatus status) {
         return paymentService.updatePaymentStatus(id, status);
     }
 

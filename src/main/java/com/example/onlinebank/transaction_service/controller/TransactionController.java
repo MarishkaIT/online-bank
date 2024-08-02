@@ -1,5 +1,6 @@
 package com.example.onlinebank.transaction_service.controller;
 
+import com.example.onlinebank.payment_service.entity.PaymentStatus;
 import com.example.onlinebank.transaction_service.entity.Transaction;
 import com.example.onlinebank.transaction_service.service.TransactionService;
 import org.apache.coyote.BadRequestException;
@@ -54,7 +55,7 @@ public class TransactionController {
         return transactionService.createTransactionWithPayment(accountId, amount, description);
     }
     @PutMapping("/{transactionId}/payment-status")
-    public void updateTransactionAndPaymentStatus(@PathVariable Long transactionId, @RequestParam String paymentStatus) {
+    public void updateTransactionAndPaymentStatus(@PathVariable Long transactionId, @RequestParam PaymentStatus paymentStatus) {
         transactionService.updateTransactionAndPaymentStatus(transactionId, paymentStatus);
     }
     @DeleteMapping("/{transactionId}")
