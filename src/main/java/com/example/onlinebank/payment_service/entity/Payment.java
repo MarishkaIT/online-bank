@@ -17,11 +17,7 @@ public class Payment {
     @ManyToOne
     private Transaction transaction;
 
-    private String cardNumber;
-
-    private String expirationDate;
-
-    private String cvv;
+    private Long cardId;
 
     private BigDecimal amount;
 
@@ -29,5 +25,5 @@ public class Payment {
 
     private String paymentMethod;
 
-    private String paymentStatus;
+    private PaymentStatus paymentStatus;
 }

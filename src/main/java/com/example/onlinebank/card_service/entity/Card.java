@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -16,6 +17,10 @@ public class Card {
     private Long id;
 
     private Long clientId;
+
+    private BigDecimal balance;
+
+    private CardStatus cardStatus;
 
     @Enumerated(EnumType.STRING)
     private CardType cardType;
