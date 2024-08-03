@@ -23,7 +23,5 @@ public class Payment {
 
     private String currency;
 
-    private String paymentMethod;
-
     private PaymentStatus paymentStatus;
 }

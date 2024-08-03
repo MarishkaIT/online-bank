@@ -1,9 +1,7 @@
 package com.example.onlinebank.card_service.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -20,6 +18,7 @@ public class Card {
 
     private BigDecimal balance;
 
+    @Enumerated(EnumType.STRING)
     private CardStatus cardStatus;
 
     @Enumerated(EnumType.STRING)
