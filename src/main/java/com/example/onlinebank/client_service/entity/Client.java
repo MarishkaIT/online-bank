@@ -9,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "client")
 public class Client {
 
     @Id
@@ -23,9 +24,8 @@ public class Client {
 
     private String phoneNumber;
 
-    @ManyToOne
-    private Account account;
-    @Getter
-    private Long accountId;
+    @OneToMany(mappedBy = "client")
+    private List<Account> accounts;
+
 
 }

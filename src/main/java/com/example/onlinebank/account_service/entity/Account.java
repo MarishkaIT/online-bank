@@ -9,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "account")
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +24,8 @@ public class Account {
     private AccountType accountType;
 
     private Currency currency;
+
     @ManyToOne
+    @JoinColumn(name = "client_id")
     private Client client;
 }

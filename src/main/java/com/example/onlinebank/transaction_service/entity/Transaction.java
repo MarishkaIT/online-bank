@@ -6,10 +6,12 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
 @Data
+@Table(name = "transaction")
 public class Transaction {
 
     @Id
@@ -17,12 +19,16 @@ public class Transaction {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "account_id")
     private Account account;
 
-    private Date transactionDate;
+    @Column(name = "transaction_date")
+    private LocalDate transactionDate;
 
+    @Column(name = "amount")
     private BigDecimal amount;
 
+    @Column(name = "description", length = 255)
     private String description;
 
     @OneToOne(mappedBy = "transaction")
