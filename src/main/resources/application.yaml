@@ -1,3 +1,6 @@
+yaml:
+  duplicate-key: merge
+
 spring:
   application:
     name: online-bank
@@ -9,5 +12,5 @@ spring:
     url: jdbc:postgresql://localhost:5432/db_bank
 
   liquibase:
-    change-log: classpath:/db/changelog/db.changelog-master.yaml
+    change-log: /db/changelog/db.changelog-1.0.sql
 
