@@ -55,12 +55,8 @@ public class TransactionController {
         return transactionService.createTransactionWithPayment(accountId, amount, description);
     }
     @PutMapping("/{transactionId}/payment-status")
-    public void updateTransactionAndPaymentStatus(@PathVariable Long transactionId, @RequestParam PaymentStatus paymentStatus) {
-        transactionService.updateTransactionAndPaymentStatus(transactionId, paymentStatus);
-    }
-    @DeleteMapping("/{transactionId}")
-    public void deleteTransactionAndPayment(@PathVariable Long transactionId) {
-        transactionService.deleteTransactionAndPayment(transactionId);
+    public void updateOrDeleteTransactionAndPayment(@PathVariable Long transactionId, @RequestParam PaymentStatus paymentStatus) {
+        transactionService.updateOrDeleteTransactionAndPayment(transactionId, paymentStatus);
     }
 
     @PutMapping("/{transactionId}")

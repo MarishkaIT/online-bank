@@ -41,29 +41,36 @@ public class NotificationService {
 
     public void sendNotification(Notification notification) {
         Optional<Client> client = clientService.getClientById(notification.getClientId());
-        Account account = accountService.getAccountById(client.get().getAccountId());
+        if (client.isPresent()) {
+            Optional<Account> account = Optional.ofNullable(accountService.getAccountById(client.get().getAccounts()
+                    .stream().findFirst().map(Account::getId).orElse(null)));
+            if (account.isPresent()) {
+                switch (notification.getNotificationType()) {
+                    case TRANSACTION_SUCCESS:
+                        sendTransactionSuccessNotification(client.get(), account.get(), notification.getMessage());
+                        break;
+                    case TRANSACTION_FAILED:
+                        sendTransactionFailedNotification(client.get(), account.get(), notification.getMessage());
+                        break;
 
-        switch (notification.getNotificationType()) {
-            case TRANSACTION_SUCCESS:
-                sendTransactionSuccessNotification(client.get(), account, notification.getMessage());
-                break;
-            case TRANSACTION_FAILED:
-                sendTransactionFailedNotification(client.get(), account, notification.getMessage());
-                break;
+                    case ACCOUNT_UPDATE:
+                        sendAccountUpdateNotification(client.get(), account.get(), notification.getMessage());
+                        break;
 
-            case ACCOUNT_UPDATE:
-                sendAccountUpdateNotification(client.get(), account, notification.getMessage());
-                break;
+                    case PASSWORD_RESET:
+                        sendPasswordResetNotification(client.get(), notification.getMessage());
+                        break;
 
-            case PASSWORD_RESET:
-                sendPasswordResetNotification(client.get(), notification.getMessage());
-                break;
-
-            default:
-                log.warn("Unknown notification type: {}", notification.getNotificationType());
+                    default:
+                        log.warn("Unknown notification type: {}", notification.getNotificationType());
+                }
+            } else {
+                log.warn("Account not found for client {}", client.get().getId());
+            }
+        } else {
+            log.warn("Client not found for notification {}", notification.getId());
         }
     }
-
     private void sendPasswordResetNotification(Client client, String message) {
         String emailSubject = "Password Reset";
         String emailBody = "Dear " + client.getFirstName() + client.getLastName() + ",\n\n" +

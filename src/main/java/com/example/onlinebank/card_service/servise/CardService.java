@@ -6,6 +6,8 @@ import com.example.onlinebank.card_service.exception.BalanceNotFoundException;
 import com.example.onlinebank.card_service.exception.CardNotFoundException;
 import com.example.onlinebank.card_service.exception.InvalidCardException;
 import com.example.onlinebank.card_service.repository.CardRepository;
+import com.example.onlinebank.notification_service.entity.Notification;
+import com.example.onlinebank.notification_service.service.NotificationService;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.List;
 public class CardService {
 
     CardRepository cardRepository;
+    NotificationService notificationService;
 
     public List<Card> getAllCards() {
         return cardRepository.findAll();
@@ -34,12 +37,13 @@ public class CardService {
         }
 
         Card newCard = new Card();
-        newCard.setClientId(card.getClientId());
+        newCard.setClient(card.getClient());
         newCard.setCardType(card.getCardType());
         newCard.setCardNumber(card.getCardNumber());
         newCard.setExpirationDate(card.getExpirationDate());
         newCard.setCvv(card.getCvv());
         newCard.setCardStatus(CardStatus.NEW);
+        notificationService.sendNotification(new Notification("Card created", "Your card hes created successfully", newCard.getClient().getId()));
         return cardRepository.save(newCard);
     }
 
@@ -77,17 +81,6 @@ public class CardService {
         return true;
     }
 
-    @SneakyThrows
-    public BigDecimal getBalance(Long cardId) {
-        Card card = getCard(cardId);
-        if (card == null) {
-            throw new CardNotFoundException("Card not found");
-        }
-        if (card.getBalance() == null) {
-            throw new BalanceNotFoundException("Balance is null");
-        }
-        return card.getBalance();
-    }
     public boolean isBlocked(Long cardId) {
         Card card = cardRepository.findById(cardId).orElseThrow(()-> new CardNotFoundException("Card not found"));
         card.setCardStatus(CardStatus.BLOCKED);
