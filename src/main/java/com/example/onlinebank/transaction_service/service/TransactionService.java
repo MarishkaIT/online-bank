@@ -3,6 +3,8 @@ package com.example.onlinebank.transaction_service.service;
 import com.example.onlinebank.account_service.entity.Account;
 import com.example.onlinebank.account_service.exception.AccountNotFoundException;
 import com.example.onlinebank.account_service.repository.AccountRepository;
+import com.example.onlinebank.notification_service.entity.Notification;
+import com.example.onlinebank.notification_service.service.NotificationService;
 import com.example.onlinebank.payment_service.entity.Payment;
 import com.example.onlinebank.payment_service.entity.PaymentStatus;
 import com.example.onlinebank.payment_service.exception.PaymentCreationException;
@@ -15,6 +17,7 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +28,7 @@ public class TransactionService {
 
     AccountRepository accountRepository;
 
+    NotificationService notificationService;
     PaymentService paymentService;
 
     public List<Transaction> getAllTransaction() {
@@ -48,9 +52,11 @@ public class TransactionService {
                 .orElseThrow(() -> new AccountNotFoundException("Account not found"));
         Transaction transaction = new Transaction();
         transaction.setAccount(account);
-        transaction.setTransactionDate(new Date());
+        transaction.setTransactionDate(LocalDate.now());
         transaction.setAmount(amount);
         transaction.setDescription(description);
+
+        notificationService.sendNotification(new Notification("Transaction successful", "Your transaction has been successfully", transaction.getAccount().getClient().getId()));
 
         return transactionRepository.save(transaction);
     }
@@ -79,23 +85,20 @@ public class TransactionService {
     }
 
     @SneakyThrows
-    public void updateTransactionAndPaymentStatus(Long transactionId, PaymentStatus paymentStatus) {
+    public void updateOrDeleteTransactionAndPayment(Long transactionId, PaymentStatus paymentStatus) {
         Transaction transaction = getTransaction(transactionId);
         if (transaction.getPayment() == null) {
             throw new PaymentNotException("Payment not found for transaction");
         }
         Payment payment = paymentService.getPayment(transaction.getPayment().getId());
-        paymentService.updatePaymentStatus(payment.getId(), paymentStatus);
-    }
-
-    @SneakyThrows
-    public void deleteTransactionAndPayment(Long transactionId) {
-        Transaction transaction = getTransaction(transactionId);
-        if (transaction.getPayment() == null) {
-            throw new PaymentNotException("Payment not found for transaction");
+        if (paymentStatus != null) {
+            paymentService.updatePaymentStatus(payment.getId(), paymentStatus);
+        } else {
+            paymentService.deletePayment(payment.getId());
         }
-        paymentService.deletePayment(transaction.getPayment().getId());
-        deleteTransaction(transactionId);
+        if (paymentStatus == null) {
+            deleteTransaction(transactionId);
+        }
     }
 
     public void deleteTransaction(Long transactionId) {

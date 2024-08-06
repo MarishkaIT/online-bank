@@ -2,6 +2,8 @@ package com.example.onlinebank.account_service.service;
 
 import com.example.onlinebank.account_service.entity.Account;
 import com.example.onlinebank.account_service.repository.AccountRepository;
+import com.example.onlinebank.notification_service.entity.Notification;
+import com.example.onlinebank.notification_service.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,7 @@ public class AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
+    private NotificationService notificationService;
 
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
@@ -22,6 +25,8 @@ public class AccountService {
     }
 
     public Account createAccount(Account account) {
+        notificationService.sendNotification(new Notification("Account created", "Your account has been created successfully",
+                account.getClient().getId()));
         return accountRepository.save(account);
     }
 

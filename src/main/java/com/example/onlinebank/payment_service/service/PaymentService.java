@@ -3,6 +3,8 @@ package com.example.onlinebank.payment_service.service;
 import com.example.onlinebank.card_service.entity.Card;
 import com.example.onlinebank.card_service.exception.CardNotFoundException;
 import com.example.onlinebank.card_service.servise.CardService;
+import com.example.onlinebank.notification_service.entity.Notification;
+import com.example.onlinebank.notification_service.service.NotificationService;
 import com.example.onlinebank.payment_service.entity.Payment;
 import com.example.onlinebank.payment_service.entity.PaymentStatus;
 import com.example.onlinebank.payment_service.repository.PaymentRepository;
@@ -18,18 +20,22 @@ public class PaymentService {
     @Autowired
     private CardService cardService;
 
+    private NotificationService notificationService;
+
 
     public Payment createPayment(Payment payment) {
-        Card card = cardService.getCard(payment.getCardId());
+        Card card = cardService.getCard(payment.getCard().getId());
         if (!isValidCardForTransaction(card, payment.getAmount())){
             throw new CardNotFoundException("Invalid card or insufficient found");
         }
-        return paymentRepository.save(payment);
+        Payment savedPayment = paymentRepository.save(payment);
+        notificationService.sendNotification(new Notification("Payment created", "Payment created successfully", savedPayment.getCard().getClient().getId()));
+        return savedPayment;
     }
 
     private boolean isValidCardForTransaction(Card card, BigDecimal amount) {
         return cardService.isValid(card)
-                && card.getBalance().compareTo(amount) >= 0
+                && card.getAccount().getBalance().compareTo(amount) >= 0
                 &&!cardService.isBlocked(card.getId());
     }
 

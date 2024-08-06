@@ -4,6 +4,8 @@ import com.example.onlinebank.client_service.entity.Client;
 import com.example.onlinebank.client_service.exception.ClientExistsException;
 import com.example.onlinebank.client_service.exception.InvalidClientDataException;
 import com.example.onlinebank.client_service.repository.ClientRepository;
+import com.example.onlinebank.notification_service.entity.Notification;
+import com.example.onlinebank.notification_service.service.NotificationService;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ public class ClientService {
 
     private ClientRepository clientRepository;
     private MessageSource messageSource;
+    private NotificationService notificationService;
 
 
 
@@ -40,11 +43,15 @@ public class ClientService {
             throw new ClientExistsException(messageSource.getMessage("error.client.exists", null, LocaleContextHolder.getLocale()));
         }
 
+        notificationService.sendNotification(new Notification("Profile created", "Your profile has been created successfully", client.getId()));
+
         return clientRepository.save(client);
     }
 
     @Transactional
     public Client updateClient(Client client) {
+        notificationService.sendNotification(new Notification("Profile updated", "Your profile has been updated successfully", client.getId()));
+
         return clientRepository.save(client);
     }
 
