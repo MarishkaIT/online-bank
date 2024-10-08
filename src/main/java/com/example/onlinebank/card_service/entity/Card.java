@@ -26,9 +26,11 @@ public class Card {
     private Account account;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "card_status", columnDefinition = "VARCHAR(255)")
     private CardStatus cardStatus;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "card_type", columnDefinition = "VARCHAR(255)")
     private CardType cardType;
 
     @Column(name = "card_number", length = 255, columnDefinition = "VARCHAR(255)")
@@ -38,7 +40,7 @@ public class Card {
     @Column(name = "expiration_date")
     private Date expirationDate;
 
+    @Column(name = "cvv",length = 255, columnDefinition = "VARCHAR(255)")
     private String cvv;
-
 
 }
