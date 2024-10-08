@@ -1,5 +1,3 @@
-yaml:
-  duplicate-key: merge
 
 spring:
   application:
@@ -8,9 +6,10 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
     username: postgres
-    password: pass
-    url: jdbc:postgresql://localhost:5432/db_bank
+    password: postgres
+    url: jdbc:postgresql://localhost:5432/online_bank_db
 
-  liquibase:
-    change-log: /db/changelog/db.changelog-1.0.sql
-
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
