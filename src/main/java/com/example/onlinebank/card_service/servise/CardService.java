@@ -31,7 +31,7 @@ public class CardService {
     }
 
     public Card getCard(Long cardId) {
-        return cardRepository.findById(cardId).orElse(null);
+        return cardRepository.findById(cardId).orElseThrow();
     }
 
     @SneakyThrows
@@ -75,13 +75,13 @@ public class CardService {
     }
 
     public boolean isValid(Card card) {
-        if (card.getCardNumber() == null || card.getCardNumber().trim().isEmpty() || card.getCardNumber().length() != 16 || !card.getCardNumber().matches("\\d+")) {
+        if (card.getCardNumber() == null || card.getCardNumber().trim().isEmpty() || card.getCardNumber().length() != 16 || !card.getCardNumber().matches("\\d+") || card.getCardNumber().contains(" ")) {
             return false;
         }
         if ((card.getExpirationDate() == null) || card.getExpirationDate().before(Date.from(Instant.now()))){
             return false;
         }
-        if (card.getCvv() == null || card.getCvv().trim().isEmpty() || card.getCvv().length() != 3 || !card.getCvv().matches("\\d+")) {
+        if (card.getCvv() == null || card.getCvv().trim().isEmpty() || card.getCvv().length() != 3 || !card.getCvv().matches("\\d+") || card.getCvv().contains(" ")) {
             return false;
         }
 
@@ -89,7 +89,10 @@ public class CardService {
     }
 
     public boolean isBlocked(Long cardId) {
-        Card card = cardRepository.findById(cardId).orElseThrow(()-> new CardNotFoundException("Card not found"));
+        Card card = cardRepository.findById(cardId).orElseThrow(CardNotFoundException::new);
+        if (card == null) {
+            throw new CardNotFoundException("Card not found!");
+        }
         card.setCardStatus(CardStatus.BLOCKED);
         cardRepository.save(card);
         return true;
