@@ -4,6 +4,7 @@ import com.example.onlinebank.account_service.entity.Account;
 import com.example.onlinebank.client_service.entity.Client;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import java.math.BigDecimal;
 import java.util.Date;
