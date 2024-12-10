@@ -2,7 +2,11 @@ package com.example.onlinebank.security_service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,6 +20,8 @@ public class LoginController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    private AuthenticationManager authenticationManager;
+
     @GetMapping("/login")
     public String loginForm(Model model) {
         return "login";
@@ -24,12 +30,16 @@ public class LoginController {
     public String processLogin(@RequestParam("username") String username,
                                @RequestParam("password") String password,
                                Model model, HttpServletRequest request){
-        Authentication authentication = (Authentication) userDetailsService.loadUserByUsername(username);
-        if (authentication != null && authentication.isAuthenticated()) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password)
+            );
+            SecurityContextHolder.getContext().setAuthentication(authentication);
             return "redirect:/dashboard";
-        }else {
+        } catch (BadCredentialsException e) {
             model.addAttribute("error", "Invalid username or password");
             return "login";
         }
     }
+
 }
