@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/register-style.css">
+    <title>Registration Page</title>
+</head>
+<body>
+<div class="main">
+    <form action="/register" method="post">
+        <h2>Registration Form</h2>
+        <div class="input-field">
+            <input type="text" id="firstName" name="firstName" required placeholder=" ">
+            <label for="firstName">First Name</label>
+        </div>
+        <div class="input-field">
+            <input type="text" id="lastName" name="lastName" required placeholder=" ">
+            <label for="lastName">Last Name</label>
+        </div>
+        <div class="input-field">
+            <input type="email" id="email" name="email" required placeholder=" ">
+            <label for="email">Email</label>
+        </div>
+        <div class="input-field">
+            <input type="password" id="password" name="password" required placeholder=" ">
+            <label for="password">Password</label>
+        </div>
+        <button type="submit">Register</button>
+        <p>Already have an account? <a href="index.html">Login</a></p>
+        <div id="error-message" class="error-message" style="color: darkred"></div>
+    </form>
+</div>
+
+</body>
+</html>
